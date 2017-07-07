@@ -645,10 +645,6 @@ STATIC_LIBS
 BUILD_MODULES_FALSE
 BUILD_MODULES_TRUE
 DNET_LDFLAGS
-BUILD_DPDK_RING_MODULE_FALSE
-BUILD_DPDK_RING_MODULE_TRUE
-BUILD_DPDK_MODULE_FALSE
-BUILD_DPDK_MODULE_TRUE
 BUILD_NETMAP_MODULE_FALSE
 BUILD_NETMAP_MODULE_TRUE
 BUILD_PCAP_MODULE_FALSE
@@ -799,8 +795,6 @@ with_libpcap_libraries
 with_dnet_includes
 with_dnet_libraries
 with_netmap_includes
-with_dpdk_includes
-with_dpdk_libraries
 enable_bundled_modules
 enable_afpacket_module
 enable_dump_module
@@ -809,8 +803,6 @@ enable_ipq_module
 enable_nfq_module
 enable_pcap_module
 enable_netmap_module
-enable_dpdk_module
-enable_dpdkring_module
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1464,9 +1456,6 @@ Optional Features:
   --disable-nfq-module    don't build the bundled NFQ module
   --disable-pcap-module   don't build the bundled PCAP module
   --disable-netmap-module don't build the bundled netmap module
-  --disable-dpdk-module   don't build the bundled dpdk module
-  --disable-dpdkring-module
-                          don't build the bundled dpdk ring module
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
@@ -1486,8 +1475,6 @@ Optional Packages:
   --with-dnet-includes=DIR    dnet include directory
   --with-dnet-libraries=DIR   dnet library directory
   --with-netmap-includes=DIR    netmap include directory
-  --with-dpdk-includes=DIR    dpdk include directory
-  --with-dpdk-libraries=DIR    dpdk library directory
 
 Some influential environment variables:
   CC          C compiler command
@@ -2445,7 +2432,7 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 ac_config_headers="$ac_config_headers config.h"
 
-am__api_version='1.14'
+am__api_version='1.15'
 
 ac_aux_dir=
 for ac_dir in "$srcdir" "$srcdir/.." "$srcdir/../.."; do
@@ -2646,8 +2633,8 @@ test "$program_suffix" != NONE &&
 ac_script='s/[\\$]/&&/g;s/;s,x,x,$//'
 program_transform_name=`$as_echo "$program_transform_name" | sed "$ac_script"`
 
-# expand $ac_aux_dir to an absolute path
-am_aux_dir=`cd $ac_aux_dir && pwd`
+# Expand $ac_aux_dir to an absolute path.
+am_aux_dir=`cd "$ac_aux_dir" && pwd`
 
 if test x"${MISSING+set}" != xset; then
   case $am_aux_dir in
@@ -2666,7 +2653,7 @@ else
 $as_echo "$as_me: WARNING: 'missing' script is too old or missing" >&2;}
 fi
 
-if test x"${install_sh}" != xset; then
+if test x"${install_sh+set}" != xset; then
   case $am_aux_dir in
   *\ * | *\	*)
     install_sh="\${SHELL} '$am_aux_dir/install-sh'" ;;
@@ -2994,8 +2981,8 @@ MAKEINFO=${MAKEINFO-"${am_missing_run}makeinfo"}
 # <http://lists.gnu.org/archive/html/automake/2012-07/msg00014.html>
 mkdir_p='$(MKDIR_P)'
 
-# We need awk for the "check" target.  The system "awk" is bad on
-# some platforms.
+# We need awk for the "check" target (and possibly the TAP driver).  The
+# system "awk" is bad on some platforms.
 # Always define AMTAR for backward compatibility.  Yes, it's still used
 # in the wild :-(  We should find a proper way to deprecate it ...
 AMTAR='$${TAR-tar}'
@@ -3052,6 +3039,7 @@ END
     as_fn_error $? "Your 'rm' program is bad, sorry." "$LINENO" 5
   fi
 fi
+
 
 # Checks for programs.
 ac_ext=c
@@ -13207,32 +13195,6 @@ if test "x$with_netmap_includes" != "xno"; then
     CPPFLAGS="${CPPFLAGS} -I${with_netmap_includes}"
 fi
 
-
-# Check whether --with-dpdk_includes was given.
-if test "${with_dpdk_includes+set}" = set; then :
-  withval=$with_dpdk_includes; with_dpdk_includes="$withval"
-else
-  with_dpdk_includes="no"
-fi
-
-
-if test "x$with_dpdk_includes" != "xno"; then
-    CPPFLAGS="${CPPFLAGS} -I${with_dpdk_includes}"
-fi
-
-
-# Check whether --with-dpdk_libraries was given.
-if test "${with_dpdk_libraries+set}" = set; then :
-  withval=$with_dpdk_libraries; with_dpdk_libraries="$withval"
-else
-  with_dpdk_libraries="no"
-fi
-
-
-if test "x$with_dpdk_libraries" != "xno"; then
-    DPDK_LDFLAGS="-L${with_dpdk_libraries}"
-fi
-
 DEFAULT_ENABLE=yes
 
 # Modules configuration
@@ -13701,68 +13663,6 @@ else
 fi
 
 
-# dpdk Module
-# Check whether --enable-dpdk-module was given.
-if test "${enable_dpdk_module+set}" = set; then :
-  enableval=$enable_dpdk_module; enable_dpdk_module="$enableval"
-else
-  enable_dpdk_module="$DEFAULT_ENABLE"
-fi
-
-if test "$enable_dpdk_module" = yes; then
-    ac_fn_c_check_header_mongrel "$LINENO" "rte_config.h" "ac_cv_header_rte_config_h" "$ac_includes_default"
-if test "x$ac_cv_header_rte_config_h" = xyes; then :
-
-else
-  enable_dpdk_module=no
-fi
-
-
-    if test "$enable_dpdk_module" = yes; then
-        STATIC_LIBS="${STATIC_LIBS} -lsfbpf ${DPDK_LDFLAGS} -ldpdk -lpthread"
-        CFLAGS="${CFLAGS} -std=gnu99 -Wno-pedantic"
-    fi
-fi
- if test "$enable_dpdk_module" = yes; then
-  BUILD_DPDK_MODULE_TRUE=
-  BUILD_DPDK_MODULE_FALSE='#'
-else
-  BUILD_DPDK_MODULE_TRUE='#'
-  BUILD_DPDK_MODULE_FALSE=
-fi
-
-
-# dpdk Ring Module
-# Check whether --enable-dpdkring-module was given.
-if test "${enable_dpdkring_module+set}" = set; then :
-  enableval=$enable_dpdkring_module; enable_dpdkring_module="$enableval"
-else
-  enable_dpdkring_module="$DEFAULT_ENABLE"
-fi
-
-if test "$enable_dpdkring_module" = yes; then
-    ac_fn_c_check_header_mongrel "$LINENO" "rte_config.h" "ac_cv_header_rte_config_h" "$ac_includes_default"
-if test "x$ac_cv_header_rte_config_h" = xyes; then :
-
-else
-  enable_dpdkring_module=no
-fi
-
-
-    if test "$enable_dpdkring_module" = yes; then
-        STATIC_LIBS="${STATIC_LIBS} -lsfbpf ${DPDK_LDFLAGS} -ldpdk -lpthread"
-        CFLAGS="${CFLAGS} -std=gnu99 -Wno-pedantic"
-    fi
-fi
- if test "$enable_dpdkring_module" = yes; then
-  BUILD_DPDK_RING_MODULE_TRUE=
-  BUILD_DPDK_RING_MODULE_FALSE='#'
-else
-  BUILD_DPDK_RING_MODULE_TRUE='#'
-  BUILD_DPDK_RING_MODULE_FALSE=
-fi
-
-
 if test "$enable_ipq_module" = yes -o "$enable_nfq_module" = yes ; then
     for ac_header in dnet.h
 do :
@@ -13920,8 +13820,6 @@ fi
 
 
  if test "$enable_afpacket_module" = yes -o \
-									  "$enable_dpdk_module" = yes -o \
-									  "$enable_dpdkring_module" = yes -o \
                                       "$enable_dump_module" = yes -o \
                                       "$enable_ipfw_module" = yes -o \
                                       "$enable_ipq_module" = yes -o \
@@ -14562,14 +14460,6 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${BUILD_NETMAP_MODULE_TRUE}" && test -z "${BUILD_NETMAP_MODULE_FALSE}"; then
   as_fn_error $? "conditional \"BUILD_NETMAP_MODULE\" was never defined.
-Usually this means the macro was only invoked conditionally." "$LINENO" 5
-fi
-if test -z "${BUILD_DPDK_MODULE_TRUE}" && test -z "${BUILD_DPDK_MODULE_FALSE}"; then
-  as_fn_error $? "conditional \"BUILD_DPDK_MODULE\" was never defined.
-Usually this means the macro was only invoked conditionally." "$LINENO" 5
-fi
-if test -z "${BUILD_DPDK_RING_MODULE_TRUE}" && test -z "${BUILD_DPDK_RING_MODULE_FALSE}"; then
-  as_fn_error $? "conditional \"BUILD_DPDK_RING_MODULE\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${BUILD_MODULES_TRUE}" && test -z "${BUILD_MODULES_FALSE}"; then
@@ -16735,8 +16625,6 @@ fi
 
 echo
 echo "Build AFPacket DAQ module.. : $enable_afpacket_module"
-echo "Build DPDK DAQ module...... : $enable_dpdk_module"
-echo "Build DPDK Ring DAQ module. : $enable_dpdkring_module"
 echo "Build Dump DAQ module...... : $enable_dump_module"
 echo "Build IPFW DAQ module...... : $enable_ipfw_module"
 echo "Build IPQ DAQ module....... : $enable_ipq_module"
