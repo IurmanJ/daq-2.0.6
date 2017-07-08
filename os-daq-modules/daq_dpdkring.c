@@ -19,6 +19,7 @@
 #include <rte_mbuf.h>
 #include <rte_memcpy.h>
 #include <rte_ring.h>
+#include <rte_prefetch.h>
 
 #define DAQ_DPDK_VERSION 2
 #define MAX_ARGS 64
@@ -494,6 +495,7 @@ static int dpdkring_daq_acquire(void *handle, int cnt, DAQ_Analysis_Func_t callb
 				verdict = DAQ_VERDICT_PASS;
 
 				data = rte_pktmbuf_mtod(rx_burst[i], void *);
+				rte_prefetch0(data);
 				len = rte_pktmbuf_data_len(rx_burst[i]);
 
 				dpdkc->stats.hw_packets_received++;
