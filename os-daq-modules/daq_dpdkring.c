@@ -518,8 +518,9 @@ static int dpdkring_daq_acquire(void *handle, int cnt, DAQ_Analysis_Func_t callb
 					daqhdr.egress_group = DAQ_PKTHDR_UNKNOWN;
 					daqhdr.flags = 0;
 					daqhdr.opaque = 0;
-					//daqhdr.priv_ptr = NULL;
-					daqhdr.priv_ptr = 1; //TODO: check it comes from FastClick and, only then, notify Snort with priv_ptr
+					daqhdr.priv_ptr = rx_burst[i]->userdata;
+					if (daqhdr.priv_ptr != NULL)
+						printf("Stream ID = %u\n", daqhdr.priv_ptr);
 					daqhdr.address_space_id = 0;
 
 					if (callback)
