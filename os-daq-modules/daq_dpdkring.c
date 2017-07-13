@@ -352,7 +352,7 @@ static int dpdkring_daq_initialize(const DAQ_Config_t *config, void **ctxt_ptr, 
 	/* If there are any leftover unbridged interfaces and we're not in Passive mode, error out. */
 	if (!dpdkc->instances || (dpdkc->peer_mode && (num_intfs % 2) != 0))
 	{
-		snprintf(errbuf, errlen, "%s: Invalid interface specification: \"%s\"", __FUNCTION__, dpdkc->device, num_intfs);
+		snprintf(errbuf, errlen, "%s: Invalid interface specification: \"%s\"", __FUNCTION__, dpdkc->device);
 		goto err;
 	}
 	
@@ -518,9 +518,7 @@ static int dpdkring_daq_acquire(void *handle, int cnt, DAQ_Analysis_Func_t callb
 					daqhdr.egress_group = DAQ_PKTHDR_UNKNOWN;
 					daqhdr.flags = 0;
 					daqhdr.opaque = 0;
-					daqhdr.priv_ptr = rx_burst[i]->userdata;
-					if (daqhdr.priv_ptr != NULL)
-						printf("Stream ID = %u\n", daqhdr.priv_ptr);
+					daqhdr.priv_ptr = rx_burst[i]->userdata; //NULL;
 					daqhdr.address_space_id = 0;
 
 					if (callback)
