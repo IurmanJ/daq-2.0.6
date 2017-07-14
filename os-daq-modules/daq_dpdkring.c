@@ -518,20 +518,9 @@ static int dpdkring_daq_acquire(void *handle, int cnt, DAQ_Analysis_Func_t callb
 					daqhdr.egress_group = DAQ_PKTHDR_UNKNOWN;
 					daqhdr.flags = 0;
 					daqhdr.opaque = 0;
+					daqhdr.priv_ptr = rx_burst[i]->userdata;
+					daqhdr.flow_id = (uint32_t)(uintptr_t) rx_burst[i]->userdata;
 					daqhdr.address_space_id = 0;
-					
-					// TODO: TO BE REMOVED AFTER TESTING
-					uint32_t flow_id = (uint32_t)(uintptr_t) rx_burst[i]->userdata;
-					if (flow_id == 0)
-						flow_id += 7;
-					daqhdr.priv_ptr = (void*)(uintptr_t) flow_id;
-					daqhdr.flow_id = flow_id;
-					printf("(before process) Flow ID = %u ||| ", daqhdr.flow_id);
-					//
-
-					// TODO: TO BE UNCOMMENTED AFTER TESTING
-					//daqhdr.priv_ptr = rx_burst[i]->userdata;
-					//daqhdr.flow_id = (uint32_t)(uintptr_t) rx_burst[i]->userdata;
 
 					if (callback)
 					{
@@ -540,9 +529,6 @@ static int dpdkring_daq_acquire(void *handle, int cnt, DAQ_Analysis_Func_t callb
 							verdict = DAQ_VERDICT_PASS;
 						dpdkc->stats.verdicts[verdict]++;
 						verdict = verdict_translation_table[verdict];
-						
-						// TODO: TO BE REMOVED AFTER TESTING
-						printf("(after process) Flow ID = %u\n", daqhdr.flow_id);
 					}
 					
 					dpdkc->stats.packets_received++;
