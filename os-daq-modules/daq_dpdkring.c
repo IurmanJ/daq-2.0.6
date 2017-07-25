@@ -458,8 +458,6 @@ static int dpdkring_daq_acquire(void *handle, int cnt, DAQ_Analysis_Func_t callb
 		ignored_one = 0;
 		sent_one = 0;
 		
-		gettimeofday(&ts, NULL);
-		
 		for (instance = dpdkc->instances; instance; instance = instance->next)
 		{
 			// Breakloop called ?
@@ -482,6 +480,8 @@ static int dpdkring_daq_acquire(void *handle, int cnt, DAQ_Analysis_Func_t callb
 				burst_size = BURST_SIZE;
 			else
 				burst_size = cnt - c;
+			
+			gettimeofday(&ts, NULL);
 			
 			// Read RX ring
 			const uint16_t nb_read = rte_ring_dequeue_burst(instance->rx_ring, (void *)rx_burst, burst_size);
