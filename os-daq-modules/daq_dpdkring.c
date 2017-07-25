@@ -581,13 +581,7 @@ send_packets:
             /* If time out, return control to the caller. */
             gettimeofday(&now, NULL);
             if (now.tv_sec > ts.tv_sec || (now.tv_usec - ts.tv_usec) > dpdkc->timeout * 1000)
-			{
                 return 0;
-			}
-        }
-        else
-        {
-            gettimeofday(&ts, NULL);
         }
 	}
 
