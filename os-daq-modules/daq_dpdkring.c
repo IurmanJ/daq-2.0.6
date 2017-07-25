@@ -458,6 +458,8 @@ static int dpdkring_daq_acquire(void *handle, int cnt, DAQ_Analysis_Func_t callb
 		ignored_one = 0;
 		sent_one = 0;
 		
+		gettimeofday(&ts, NULL);
+		
 		for (instance = dpdkc->instances; instance; instance = instance->next)
 		{
 			// Breakloop called ?
@@ -474,8 +476,6 @@ static int dpdkring_daq_acquire(void *handle, int cnt, DAQ_Analysis_Func_t callb
                 if (burst_size > 0)
                     goto send_packets;
             }
-			
-			gettimeofday(&ts, NULL);
 			
 			// Determine burst size for reading
 			if (cnt == 0 || (cnt - c) >= BURST_SIZE)
